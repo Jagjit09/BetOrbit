@@ -97,7 +97,17 @@ export default function MarketDetails() {
 
   // Socket connection instance
   useEffect(() => {
-    const socket = ioClient('http://localhost:5000');
+    const socketUrl = import.meta.env.VITE_API_URL 
+      ? import.meta.env.VITE_API_URL.replace('/api', '') 
+      : (typeof window !== 'undefined' && window.location.hostname !== 'localhost' 
+          ? window.location.origin 
+          : 'http://localhost:5000');
+          
+    const socket = ioClient(socketUrl, {
+      path: typeof window !== 'undefined' && window.location.hostname !== 'localhost' 
+        ? '/_/backend/socket.io' 
+        : '/socket.io'
+    });
 
     socket.emit('joinMarket', activeMarketId);
 
