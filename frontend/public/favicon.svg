@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="64" height="64" fill="none">
+  <defs>
+    <linearGradient id="logoGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stopColor="#0072F5" />
+      <stop offset="100%" stopColor="#8c6ef0" />
+    </linearGradient>
+  </defs>
+  <!-- Outer orbital ring matching the navbar logo -->
+  <ellipse cx="50" cy="50" rx="38" ry="14" stroke="url(#logoGrad)" stroke-width="6" fill="none" transform="rotate(-28 50 50)" />
+  <!-- Green moon -->
+  <circle cx="82" cy="35" r="7" fill="#10b981" />
+  <!-- Center Core Planet: White background to make the "B" highly visible in tab titles -->
+  <circle cx="50" cy="50" r="22" fill="#ffffff" stroke="url(#logoGrad)" stroke-width="6" />
+  <!-- stylized "B" letter -->
+  <path d="M44 38H50C54 38 56 40 56 43C56 45 54 47 51 47.5C54.5 48 57 50.5 57 54C57 57.5 54 59.5 50 59.5H44V38ZM48 45.5V47.5H50.5C52 47.5 52.5 47 52.5 46.2C52.5 45.5 52 45.5 50.5 45.5H48ZM48 51.5V56.5H51C52.5 56.5 53 56 53 55C53 54 52.5 53.5 51 53.5H48Z" fill="#2D2A26" />
+</svg>

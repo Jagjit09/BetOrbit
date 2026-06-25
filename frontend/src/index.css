@@ -1,0 +1,61 @@
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
+
+@layer base {
+  body {
+    @apply bg-[#F9F8F6] text-[#2D2A26] font-sans antialiased overflow-x-hidden;
+  }
+
+  /* Custom Scrollbars */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    background: rgba(140, 134, 122, 0.04);
+  }
+  ::-webkit-scrollbar-thumb {
+    background: rgba(140, 134, 122, 0.15);
+    border-radius: 4px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: rgba(140, 134, 122, 0.25);
+  }
+}
+
+/* Creamy Theme Card Panels */
+.glass-panel {
+  background: #FFFFFF;
+  border: 1px solid #EBE7DF;
+  border-radius: 16px;
+  box-shadow: 0 6px 20px 0 rgba(140, 134, 122, 0.04);
+}
+
+.glass-panel-glow {
+  background: #FFFFFF;
+  border: 1px solid rgba(0, 114, 245, 0.22);
+  border-radius: 16px;
+  box-shadow: 0 4px 20px 0 rgba(0, 114, 245, 0.06);
+}
+
+.neon-text-glow-green {
+  text-shadow: 0 0 8px rgba(16, 185, 129, 0.15);
+}
+
+.neon-text-glow-red {
+  text-shadow: 0 0 8px rgba(244, 63, 94, 0.15);
+}
+
+.neon-border-glow-purple {
+  box-shadow: 0 0 12px rgba(99, 68, 204, 0.08);
+}
+
+/* Interactive elements */
+.btn-primary {
+  @apply bg-[#0072F5] hover:bg-[#0062D2] text-white font-bold px-5 py-2 rounded-lg transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] shadow-md shadow-blue-500/10 hover:shadow-lg hover:shadow-blue-500/20;
+}
+
+.btn-secondary {
+  @apply bg-slate-100 border border-slate-200 text-slate-700 font-bold px-5 py-2 rounded-lg transition-all duration-300 hover:bg-slate-200 hover:text-slate-900 active:scale-[0.98];
+}

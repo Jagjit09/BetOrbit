@@ -1,0 +1,142 @@
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db?connection_limit=1&busy_timeout=15000"
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id                 String              @id @default(uuid())
+  name               String
+  email              String              @unique
+  mobile             String?
+  passwordHash       String
+  role               String              @default("user") // "user" or "admin"
+  demoBalance        Float               @default(1000.0)
+  bankName           String?
+  bankAccount        String?
+  bankRouting        String?
+  cryptoBtc          String?
+  cryptoEth          String?
+  cryptoUsdt         String?
+  createdAt          DateTime            @default(now())
+  orders             Order[]
+  buyerTrades        Trade[]             @relation("BuyerTrades")
+  sellerTrades       Trade[]             @relation("SellerTrades")
+  positions          Position[]
+  walletTransactions WalletTransaction[]
+  comments           Comment[]
+}
+
+model Market {
+  id               String            @id @default(uuid())
+  title            String
+  description      String
+  category         String            // e.g. "Crypto", "Sports", "Politics", "Weather", "Tech"
+  image            String?
+  status           String            @default("open") // "open", "closed", "resolved", "cancelled"
+  resolutionSource String
+  endTime          DateTime
+  isRapid          Boolean           @default(false) // For 5-minute rapid markets
+  basePrice        Float?            // The starting price index for rapid markets
+  createdAt        DateTime          @default(now())
+  outcomes         Outcome[]
+  orders           Order[]
+  trades           Trade[]
+  positions        Position[]
+  marketResolution MarketResolution?
+  comments         Comment[]
+}
+
+model Outcome {
+  id               String            @id @default(uuid())
+  marketId         String
+  market           Market            @relation(fields: [marketId], references: [id], onDelete: Cascade)
+  name             String            // "YES" or "NO"
+  currentPrice     Float             @default(0.50)
+  orders           Order[]
+  trades           Trade[]
+  positions        Position[]
+  marketResolution MarketResolution[]
+}
+
+model Order {
+  id             String   @id @default(uuid())
+  userId         String
+  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  marketId       String
+  market         Market   @relation(fields: [marketId], references: [id], onDelete: Cascade)
+  outcomeId      String
+  outcome        Outcome  @relation(fields: [outcomeId], references: [id], onDelete: Cascade)
+  side           String   // "buy" or "sell"
+  price          Float    // Range: 0.01 to 0.99
+  quantity       Float
+  filledQuantity Float    @default(0.0)
+  status         String   @default("open") // "open", "filled", "cancelled"
+  createdAt      DateTime @default(now())
+}
+
+model Trade {
+  id        String   @id @default(uuid())
+  marketId  String
+  market    Market   @relation(fields: [marketId], references: [id], onDelete: Cascade)
+  buyerId   String
+  buyer     User     @relation("BuyerTrades", fields: [buyerId], references: [id], onDelete: Cascade)
+  sellerId  String
+  seller    User     @relation("SellerTrades", fields: [sellerId], references: [id], onDelete: Cascade)
+  outcomeId String
+  outcome   Outcome  @relation(fields: [outcomeId], references: [id], onDelete: Cascade)
+  price     Float
+  quantity  Float
+  createdAt DateTime @default(now())
+}
+
+model Position {
+  id           String   @id @default(uuid())
+  userId       String
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  marketId     String
+  market       Market   @relation(fields: [marketId], references: [id], onDelete: Cascade)
+  outcomeId    String
+  outcome      Outcome  @relation(fields: [outcomeId], references: [id], onDelete: Cascade)
+  quantity     Float    // Number of shares
+  averagePrice Float    // Average cost per share
+  createdAt    DateTime @default(now())
+
+  @@unique([userId, marketId, outcomeId])
+}
+
+model WalletTransaction {
+  id           String   @id @default(uuid())
+  userId       String
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  type         String   // "credit" or "debit"
+  amount       Float
+  reason       String
+  balanceAfter Float
+  createdAt    DateTime @default(now())
+}
+
+model MarketResolution {
+  id               String   @id @default(uuid())
+  marketId         String   @unique
+  market           Market   @relation(fields: [marketId], references: [id], onDelete: Cascade)
+  winningOutcomeId String
+  winningOutcome   Outcome  @relation(fields: [winningOutcomeId], references: [id], onDelete: Cascade)
+  resolvedBy       String
+  resolvedAt       DateTime @default(now())
+  proofUrl         String
+  notes            String?
+}
+
+model Comment {
+  id        String   @id @default(uuid())
+  marketId  String
+  market    Market   @relation(fields: [marketId], references: [id], onDelete: Cascade)
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  content   String
+  createdAt DateTime @default(now())
+}
