@@ -135,10 +135,29 @@ router.post('/login', async (req, res) => {
       return res.status(400).json({ error: error.errors[0].message });
     }
     console.error('Login error:', error);
+    let debugInfo = {};
+    try {
+      const fs = (await import('fs')).default;
+      const path = (await import('path')).default;
+      const { fileURLToPath } = await import('url');
+      const __dirname = path.dirname(fileURLToPath(import.meta.url));
+      const srcPath = path.resolve(__dirname, '../../prisma/dev.db');
+      const destPath = '/tmp/dev.db';
+      debugInfo = {
+        srcPath,
+        srcExists: fs.existsSync(srcPath),
+        destExists: fs.existsSync(destPath),
+        srcSize: fs.existsSync(srcPath) ? fs.statSync(srcPath).size : -1,
+        destSize: fs.existsSync(destPath) ? fs.statSync(destPath).size : -1,
+      };
+    } catch (fsErr) {
+      debugInfo = { error: fsErr.message };
+    }
     res.status(500).json({ 
       error: 'Server error during login',
       message: error.message,
-      stack: error.stack
+      stack: error.stack,
+      debug: debugInfo
     });
   }
 });
