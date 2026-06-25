@@ -12,7 +12,8 @@ if (process.env.VERCEL || process.env.NODE_ENV === 'production') {
 
   try {
     fs.copyFileSync(srcPath, destPath);
-    console.log('Successfully copied SQLite dev.db to writeable /tmp/dev.db');
+    fs.chmodSync(destPath, 0o666);
+    console.log('Successfully copied SQLite dev.db to writeable /tmp/dev.db and set permissions');
   } catch (err) {
     console.error('Failed to copy SQLite database to /tmp:', err);
   }
@@ -20,7 +21,7 @@ if (process.env.VERCEL || process.env.NODE_ENV === 'production') {
   prisma = new PrismaClient({
     datasources: {
       db: {
-        url: 'file:/tmp/dev.db',
+        url: 'file:/tmp/dev.db?connection_limit=1&busy_timeout=15000',
       },
     },
   });
