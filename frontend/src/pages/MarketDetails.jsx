@@ -270,6 +270,7 @@ export default function MarketDetails() {
           <div className="relative">
             {isBtcBet ? (
               <BtcRunningChart
+                title={currentMarket.title}
                 isResolved={currentMarket.status !== 'open'}
                 winningOutcome={currentMarket.marketResolution?.winningOutcome?.name}
                 marketCreatedAt={new Date(currentMarket.createdAt).getTime()}

@@ -33,6 +33,7 @@ const smoothPath = (points) => {
 };
 
 const BtcRunningChart = ({
+  title = "BTC Up or Down 5m",
   isResolved = false,
   winningOutcome = null,
   marketCreatedAt = null,
@@ -215,7 +216,9 @@ const BtcRunningChart = ({
   const roundEnd = roundStart + ROUND_MS;
   const timeLeft = isResolved ? 0 : Math.max(0, roundEnd - now);
 
-  const minutes = Math.floor(timeLeft / 60000);
+  const days = Math.floor(timeLeft / (24 * 60 * 60000));
+  const hours = Math.floor((timeLeft % (24 * 60 * 60000)) / 3600000);
+  const minutes = Math.floor((timeLeft % 3600000) / 60000);
   const seconds = Math.floor((timeLeft % 60000) / 1000);
 
   const priceDifference =
@@ -354,7 +357,7 @@ const BtcRunningChart = ({
           </div>
 
           <div>
-            <h2>BTC Up or Down 5m</h2>
+            <h2>{title}</h2>
             <p>{roundLabel}</p>
           </div>
         </div>
@@ -417,19 +420,48 @@ const BtcRunningChart = ({
           </div>
         ) : (
           <div className="btc-countdown">
-            <div>
-              <strong className="red-digits">
-                {String(minutes).padStart(2, "0")}
-              </strong>
-              <span>MINS</span>
-            </div>
-
-            <div>
-              <strong className="red-digits">
-                {String(seconds).padStart(2, "0")}
-              </strong>
-              <span>SECS</span>
-            </div>
+            {days > 0 ? (
+              <>
+                <div>
+                  <strong className="red-digits">{String(days).padStart(2, "0")}</strong>
+                  <span>DAYS</span>
+                </div>
+                <div>
+                  <strong className="red-digits">{String(hours).padStart(2, "0")}</strong>
+                  <span>HRS</span>
+                </div>
+                <div>
+                  <strong className="red-digits">{String(minutes).padStart(2, "0")}</strong>
+                  <span>MINS</span>
+                </div>
+              </>
+            ) : hours > 0 ? (
+              <>
+                <div>
+                  <strong className="red-digits">{String(hours).padStart(2, "0")}</strong>
+                  <span>HRS</span>
+                </div>
+                <div>
+                  <strong className="red-digits">{String(minutes).padStart(2, "0")}</strong>
+                  <span>MINS</span>
+                </div>
+                <div>
+                  <strong className="red-digits">{String(seconds).padStart(2, "0")}</strong>
+                  <span>SECS</span>
+                </div>
+              </>
+            ) : (
+              <>
+                <div>
+                  <strong className="red-digits">{String(minutes).padStart(2, "0")}</strong>
+                  <span>MINS</span>
+                </div>
+                <div>
+                  <strong className="red-digits">{String(seconds).padStart(2, "0")}</strong>
+                  <span>SECS</span>
+                </div>
+              </>
+            )}
           </div>
         )}
       </div>
