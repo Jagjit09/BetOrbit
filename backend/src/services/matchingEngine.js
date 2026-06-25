@@ -199,6 +199,15 @@ export async function matchOrder(orderId) {
           where: { id: outcomeId },
           data: { currentPrice: tradePrice },
         });
+        const counterOutcome = await tx.outcome.findFirst({
+          where: { marketId, id: { not: outcomeId } }
+        });
+        if (counterOutcome) {
+          await tx.outcome.update({
+            where: { id: counterOutcome.id },
+            data: { currentPrice: parseFloat((1.0 - tradePrice).toFixed(2)) },
+          });
+        }
       }
 
       // 3.5 Fallback to match remaining order quantity directly with Market Maker bot if limit is satisfied
@@ -344,6 +353,15 @@ export async function matchOrder(orderId) {
             where: { id: outcomeId },
             data: { currentPrice: tradePrice },
           });
+          const counterOutcome = await tx.outcome.findFirst({
+            where: { marketId, id: { not: outcomeId } }
+          });
+          if (counterOutcome) {
+            await tx.outcome.update({
+              where: { id: counterOutcome.id },
+              data: { currentPrice: parseFloat((1.0 - tradePrice).toFixed(2)) },
+            });
+          }
 
           orderFilledQty += tradeQty;
           remainingQuantity -= tradeQty;
