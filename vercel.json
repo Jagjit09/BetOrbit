@@ -10,10 +10,5 @@
             "routePrefix": "/_/backend",
             "entrypoint": "src/index.js"
         }
-    },
-    "functions": {
-        "backend/src/index.js": {
-            "includeFiles": "backend/prisma/dev.db"
-        }
     }
 }
