@@ -2,6 +2,7 @@ import express from 'express';
 import prisma from '../config/db.js';
 import { authenticateToken } from '../middleware/auth.js';
 import { io } from '../services/socket.js';
+import { checkAndProcessRapidMarkets } from '../services/rapidMarketManager.js';
 
 const router = express.Router();
 
@@ -9,6 +10,11 @@ const router = express.Router();
 router.get('/', async (req, res) => {
   try {
     const { category, status, search, limit, isRapid } = req.query;
+
+    // Run rapid market check-up on request to ensure active rapid market is healthy & active
+    if (isRapid === 'true' || category === 'Crypto' || !category) {
+      await checkAndProcessRapidMarkets().catch(e => console.error('Error ticking rapid markets on request:', e));
+    }
 
     const whereClause = {};
 
