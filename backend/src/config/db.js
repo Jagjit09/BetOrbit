@@ -7,7 +7,7 @@ let prisma;
 
 if (process.env.VERCEL || process.env.NODE_ENV === 'production') {
   const __dirname = path.dirname(fileURLToPath(import.meta.url));
-  const srcPath = path.resolve(__dirname, '../../prisma/dev.db');
+  const srcPath = path.join(__dirname, '../../prisma/dev.db');
   const destPath = '/tmp/dev.db';
 
   try {
