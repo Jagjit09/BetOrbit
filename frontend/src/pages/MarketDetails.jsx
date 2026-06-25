@@ -97,8 +97,9 @@ export default function MarketDetails() {
 
   // Socket connection instance
   useEffect(() => {
-    const socketUrl = import.meta.env.VITE_API_URL 
-      ? import.meta.env.VITE_API_URL.replace('/api', '') 
+    const apiEnvUrl = import.meta.env.VITE_API_URL;
+    const socketUrl = apiEnvUrl 
+      ? apiEnvUrl.replace('/api', '') 
       : (typeof window !== 'undefined' && window.location.hostname !== 'localhost' 
           ? window.location.origin 
           : 'http://localhost:5000');
