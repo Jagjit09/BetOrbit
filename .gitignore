@@ -9,10 +9,10 @@ frontend/dist/
 frontend/build/
 
 # Databases
-backend/prisma/dev.db
 backend/prisma/dev.db-journal
 *.db
 *.db-journal
+!backend/prisma/dev.db
 
 # Environment variables
 .env
@@ -25,3 +25,5 @@ backend/prisma/dev.db-journal
 # OS specific files
 .DS_Store
 Thumbs.db
+
+.vercel
