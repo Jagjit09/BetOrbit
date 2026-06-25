@@ -10,14 +10,11 @@ if (process.env.VERCEL || process.env.NODE_ENV === 'production') {
   const srcPath = path.resolve(__dirname, '../../prisma/dev.db');
   const destPath = '/tmp/dev.db';
 
-  if (!fs.existsSync(destPath)) {
-    try {
-      // Ensure directory exists or write file directly
-      fs.copyFileSync(srcPath, destPath);
-      console.log('Successfully copied SQLite dev.db to writeable /tmp/dev.db');
-    } catch (err) {
-      console.error('Failed to copy SQLite database to /tmp:', err);
-    }
+  try {
+    fs.copyFileSync(srcPath, destPath);
+    console.log('Successfully copied SQLite dev.db to writeable /tmp/dev.db');
+  } catch (err) {
+    console.error('Failed to copy SQLite database to /tmp:', err);
   }
 
   prisma = new PrismaClient({
