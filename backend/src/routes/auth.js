@@ -141,14 +141,38 @@ router.post('/login', async (req, res) => {
       const path = (await import('path')).default;
       const { fileURLToPath } = await import('url');
       const __dirname = path.dirname(fileURLToPath(import.meta.url));
-      const srcPath = path.resolve(__dirname, '../../prisma/dev.db');
+      const srcPath = path.join(__dirname, '../../prisma/dev.db');
       const destPath = '/tmp/dev.db';
+      
+      // Helper to list directory contents recursively up to depth 3
+      const listDir = (dir, depth = 0) => {
+        if (depth > 2) return [];
+        try {
+          return fs.readdirSync(dir).map(f => {
+            const p = path.join(dir, f);
+            let isDir = false;
+            try { isDir = fs.statSync(p).isDirectory(); } catch(e) {}
+            return {
+              name: f,
+              isDir,
+              size: isDir ? undefined : fs.statSync(p).size,
+              children: isDir ? listDir(p, depth + 1) : undefined
+            };
+          });
+        } catch (e) {
+          return [e.message];
+        }
+      };
+
       debugInfo = {
+        processCwd: process.cwd(),
+        dirname: __dirname,
         srcPath,
         srcExists: fs.existsSync(srcPath),
         destExists: fs.existsSync(destPath),
         srcSize: fs.existsSync(srcPath) ? fs.statSync(srcPath).size : -1,
         destSize: fs.existsSync(destPath) ? fs.statSync(destPath).size : -1,
+        varTaskFiles: listDir('/var/task')
       };
     } catch (fsErr) {
       debugInfo = { error: fsErr.message };
