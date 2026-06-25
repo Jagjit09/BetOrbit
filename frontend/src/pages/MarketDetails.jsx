@@ -97,18 +97,17 @@ export default function MarketDetails() {
 
   // Socket connection instance
   useEffect(() => {
+    if (typeof window !== 'undefined' && window.location.hostname !== 'localhost') {
+      // Disable Socket.IO in production on Vercel (serverless environment lacks sticky sessions)
+      return;
+    }
+
     const apiEnvUrl = import.meta.env.VITE_API_URL;
     const socketUrl = apiEnvUrl 
       ? apiEnvUrl.replace('/api', '') 
-      : (typeof window !== 'undefined' && window.location.hostname !== 'localhost' 
-          ? window.location.origin 
-          : 'http://localhost:5000');
+      : 'http://localhost:5000';
           
-    const socket = ioClient(socketUrl, {
-      path: typeof window !== 'undefined' && window.location.hostname !== 'localhost' 
-        ? '/_/backend/socket.io' 
-        : '/socket.io'
-    });
+    const socket = ioClient(socketUrl);
 
     socket.emit('joinMarket', activeMarketId);
 
